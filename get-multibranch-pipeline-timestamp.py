@@ -17,7 +17,7 @@ base_url="http://localhost:8081/"
 
 pipelines=[]
 
-#Set the workbook column names
+#Set the workbook column names only use if you want to save this to xlsx
 workbook = Workbook()
 sheet = workbook.active
 sheet.title = "Jenkins Pipeline Builds"
@@ -87,7 +87,7 @@ get_pipelines_list()
 #Invoke the function to get the last build status
 for pipeline in pipelines:
     get_build_time()
-#Save the workbook
+#Save the workbook use this if you want to save this to xlsx
 output_file = "jenkins_pipeline_builds.xlsx"
 workbook.save(output_file)
 print(f"Data has been written to {output_file}")
