@@ -9,12 +9,19 @@ pip3 install requests
 import requests
 #import json #use this if you want pretty_json
 import datetime
+from openpyxl import Workbook
 
 username="admin"
-password="admn"
+password="admin"
 base_url="http://localhost:8081/"
 
 pipelines=[]
+
+#Set the workbook column names only use if you want to save this to xlsx
+workbook = Workbook()
+sheet = workbook.active
+sheet.title = "Jenkins Pipeline Builds"
+sheet.append(["Pipeline", "Branch", "Last Build Date", "Build Result", "Build URL"])  # Header row
 
 #Function which gets the list of Multi branch pipelines from Jenkins
 def get_pipelines_list():
@@ -64,6 +71,7 @@ def get_build_time():
                 print(f"Last Build Date :{datetime.datetime.fromtimestamp(job['lastBuild']['timestamp']/1000.0)}")
                 print(f"Last build reseult : {job['lastBuild']['result']}")
                 print(f"Last build url : {job['lastBuild']['url']}")
+                sheet.append([pipeline, job["name"], datetime.datetime.fromtimestamp(job['lastBuild']['timestamp']/1000.0),job['lastBuild']['result'],job['lastBuild']['url']])
         else:
             print("**************************")
             print(f"{pipeline} has no master/main branch.")
@@ -79,3 +87,7 @@ get_pipelines_list()
 #Invoke the function to get the last build status
 for pipeline in pipelines:
     get_build_time()
+#Save the workbook use this if you want to save this to xlsx
+output_file = "jenkins_pipeline_builds.xlsx"
+workbook.save(output_file)
+print(f"Data has been written to {output_file}")
